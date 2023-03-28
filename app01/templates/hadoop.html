@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EDFS_Project</title>
+{#  <script src="/static/js/jquery-1.11.1-min.js" type="text/javascript"></script>#}
+    <script src="{% static 'js/jquery-1.11.1-min.js' %}"></script>
+
+<!--  boostrap-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+{#    <style type="text/css">#}
+{#		body{#}
+{#			background-image: url({% static 'img/img5.png' %});#}
+{#		}#}
+{#	</style>#}
+
+
+  <script type="text/javascript">
+    function  getTablesInfo(){
+        $("#file-info-blockinfo-body").html("")
+        $("#tBody").html("");
+              $.ajax({
+        url: "showCurrentTable/",
+          type: 'POST',
+        dataType:'json',
+          headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        success: function (ret) {
+          var str = ""
+            if (ret.dataset_display == 1){
+                 $.each(ret.query_result,function(index,item){
+                 let arr = item.split('|')
+                 str += '<tr>'
+                 for (var i = 0; i < arr.length; i ++){
+                     str += ("<td title='" + arr[i] +"'>" + arr[i] + "</td>>")
+                 }
+                 str += '</tr>'
+             });
+            $("#tBody").html(str);
+            } else {
+                $.each(ret.query_result,function(index,item){
+                    str += "<p>"+ item+"</p>"
+             });
+                $("#file-info-blockinfo-body").html(str);
+            }
+        },
+        error: function () {
+          alert("error");
+        }
+
+      })
+
+    }
+    function goClick() {
+      var input = document.getElementById("directory").value
+        $("#file-info-blockinfo-body").html("")
+        $("#tBody").html("");
+      $.ajax({
+        url: "goClick/",
+          type: 'POST',
+        data:{
+          "input":input
+        },
+        dataType:'json',
+          headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        success: function (ret) {
+          var str = ""
+            if (ret.dataset_display == 1){
+                 $.each(ret.query_result,function(index,item){
+                 let arr = item.split('|')
+                 str += '<tr>'
+                 for (var i = 0; i < arr.length; i ++){
+                     str += ("<td title='" + arr[i] +"'>" + arr[i] + "</td>>")
+                 }
+                 str += '</tr>'
+             });
+            $("#tBody").html(str);
+            } else {
+                $.each(ret.query_result,function(index,item){
+                    str += "<p>"+ item+"</p>"
+             });
+                $("#file-info-blockinfo-body").html(str);
+            }
+        },
+        error: function () {
+          alert("error");
+        }
+
+      })
+    }
+
+
+  </script>
+</head>
+<body style="text-align:center;">
+
+<style type="text/css">
+
+</style>
+
+
+<div>
+
+  <div style="position: relative; left: 10px; top: -10px;">
+    <div class="page-header" >
+      <h3>EDFS</h3>
+        <p>Available EDFS Commands: mkdir, ls, cat, put, getPartitionLocations,readPartition,rm</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-10 col-md-10">
+      <form onsubmit="return false;">
+          {% csrf_token %}
+        <div class="input-group">
+          <input type="text" class="form-control" id="directory"/>
+          <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="btn-nav-directory" onclick="goClick()">Go</button>
+          </span>
+
+             <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="btn-nav-directory2" onclick="getTablesInfo()">Table Info</button>
+          </span>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-10 col-md-10">
+      <div class="panel-body" id="file-info-blockinfo-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-2" style="top: 10px;text-align: center">
+  <div id="info_details"></div>
+</div >
+
+
+<div style="position: relative;top: 10px;">
+  <table class="table table-hover" style="table-layout: fixed;word-break: break-all;">
+<!--  <table class="table table-hover" style="table-layout: fixed; white-space: nowrap;text-overflow: ellipsis;overflow: hidden">-->
+    <tbody id="tBody" style="font-size: 20px;">
+    </tbody>
+  </table>
+
+
+  <div id="info_details"></div>
+</div >
+</body>
+</html>

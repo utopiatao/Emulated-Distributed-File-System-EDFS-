@@ -1,0 +1,6 @@
+mysql_config:
+  user: 'root'
+  password: '000000'
+  host: '192.168.10.102'
+  port: '3306'
+  database: 'dsci551_project'
